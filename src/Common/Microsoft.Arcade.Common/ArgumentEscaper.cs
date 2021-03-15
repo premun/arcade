@@ -1,8 +1,9 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Microsoft.Arcade.Common
@@ -46,17 +47,7 @@ namespace Microsoft.Arcade.Common
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
-        private static IEnumerable<string> EscapeArgArray(IEnumerable<string> args)
-        {
-            var escapedArgs = new List<string>();
-
-            foreach (var arg in args)
-            {
-                escapedArgs.Add(EscapeArg(arg));
-            }
-
-            return escapedArgs;
-        }
+        private static IEnumerable<string> EscapeArgArray(IEnumerable<string> args) => args.Select(EscapeArg);
 
         /// <summary>
         /// This prefixes every character with the '^' character to force cmd to
@@ -85,7 +76,10 @@ namespace Microsoft.Arcade.Common
             var sb = new StringBuilder();
 
             var quoted = ShouldSurroundWithQuotes(arg);
-            if (quoted) sb.Append("\"");
+            if (quoted)
+            {
+                sb.Append("\"");
+            }
 
             for (int i = 0; i < arg.Length; ++i)
             {
@@ -187,18 +181,13 @@ namespace Microsoft.Arcade.Common
         {
             // Don't quote already quoted strings
             if (argument.StartsWith("\"", StringComparison.Ordinal) &&
-                    argument.EndsWith("\"", StringComparison.Ordinal))
+                argument.EndsWith("\"", StringComparison.Ordinal))
             {
                 return false;
             }
 
             // Only quote if whitespace exists in the string
-            if (argument.Contains(" ") || argument.Contains("\t") || argument.Contains("\n"))
-            {
-                return true;
-            }
-
-            return true;
+            return argument.Contains(" ") || argument.Contains("\t") || argument.Contains("\n");
         }
     }
 }
