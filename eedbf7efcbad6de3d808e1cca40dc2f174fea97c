@@ -1,0 +1,4 @@
+Next steps:
+- Package reference problems in new SDKs
+- Tests failing
+- The job does not shut down when all Helix jobs are processed
